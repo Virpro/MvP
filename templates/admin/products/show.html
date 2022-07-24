@@ -1,0 +1,86 @@
+{% extends "base/page_base.html" %}
+{% load static %}
+{% block brandlink %}
+  {% url 'mAD_index' %}
+{% endblock brandlink %}
+
+{% block brand_small %}
+Manage your own Virtual Products
+{% endblock brand_small %}
+
+{% block title %}
+product show
+{% endblock title %}
+
+{% block sidebar %}
+<nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block navbar-light bg-light sidebar collapse">
+  <div class="sidebar-sticky pt-3 pl-3">
+    <ul class="navbar-nav flex-column">
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'mAD_index' %}">
+          <span data-feather="home"></span>
+          Dashboard <span class="sr-only">(current)</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'mAD_user' %}">
+          <span data-feather="file"></span>
+          Constructors
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link active" href="{% url 'mAD_p_show' %}">
+          <span data-feather="file"></span>
+          Products
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'mAD_manu' %}">
+          <span data-feather="file"></span>
+          Manufacturers
+        </a>
+      </li>
+    </ul>
+  </div>
+</nav>
+{% endblock sidebar %}
+
+{% block page_view %}
+<div class="row">
+  {% for product in productlist %}
+    <div class="col-md-6 col-lg-4 col-xl-3 pt-2 justify-content-around">
+      <div class="card  shadow-sm" >
+        <svg class="bd-placeholder-img card-img-top" width="100%" height="225" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice" focusable="false">
+          <title>Placeholder</title>
+          <rect width="100%" height="100%" fill="#55595c"/>
+          <text alignment-baseline="middle" text-anchor="middle" x="50%" y="50%" fill="#eceeef" dy=".3em" font-size="30">{{ product.p_name }}</text>
+        </svg>
+      </div>
+      <div class="card-body bg-light" >
+        <h4 class="card-text">Information: </h4>
+        <div class="py-2" style="width:auto;height:100px;overflow:scroll;padding:5px;">
+          <h6>Search ID: </h6>
+          <p class="card-text mt-0">{{ product.search_id }}</p>
+          <h6>Description: </h6>
+          <p class="card-text mt-0">{{ product.description }}</p>
+        </div>
+        <div class="d-flex justify-content-between align-items-center pt-2">
+          <div class="btn-group">
+            <a type="button" class="btn btn-sm btn-outline-secondary" href="{% url 'mAD_p_view' product.p_id %}">View</a>
+            <a type="button" class="btn btn-sm btn-outline-secondary" href="{% url 'mAD_p_edit' product.p_id %}">Edit</a>
+          </div>
+          {% if product.p_status == 0 %}
+          <small class="text-muted">Private</small>
+          {% elif product.p_status == 1 %}
+          <small class="text-muted">Public</small>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  {% endfor %}
+</div>
+{% endblock page_view %}
+
+{% block signout_model_redirect %}
+  {% url 'mAD_signin' %}
+{% endblock signout_model_redirect %}

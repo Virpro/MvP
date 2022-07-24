@@ -1,0 +1,54 @@
+{% extends "base/page_base.html" %}
+
+{% block title %}
+Homepage
+{% endblock title %}
+
+{% block brandlink %}
+  {% url 'mAD_index' %}
+{% endblock brandlink %}
+
+{% block brand_small %}
+Manage your own Virtual Products
+{% endblock brand_small %}
+
+{% block sidebar %}
+<nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block navbar-light bg-light sidebar collapse">
+  <div class="sidebar-sticky pt-3 pl-3">
+    <ul class="navbar-nav flex-column">
+      <li class="nav-item active">
+        <a class="nav-link" href="{% url 'mAD_index' %}">
+          <span data-feather="home"></span>
+          Dashboard <span class="sr-only">(current)</span>
+        </a>
+      </li>
+      <li class="nav-item ">
+        <a class="nav-link" href="{% url 'mAD_user' %}">
+          <span data-feather="file"></span>
+          Constructors
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'mAD_p_show' %}">
+          <span data-feather="file"></span>
+          Products
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'mAD_manu' %}">
+          <span data-feather="file"></span>
+          Manufacturers
+        </a>
+      </li>
+    </ul>
+  </div>
+</nav>
+{% endblock sidebar %}
+
+{% block signout_model_redirect %}
+  {% url 'mAD_signin' %}
+{% endblock signout_model_redirect %}
+
+{% block page_view %}
+HomePage
+{% endblock page_view %}

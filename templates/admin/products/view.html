@@ -1,0 +1,159 @@
+{% extends "base/page_base.html" %}
+{% load static %}
+{% block brandlink %}
+  {% url 'mAD_index' %}
+{% endblock brandlink %}
+
+{% block css %}
+ <link rel="stylesheet" href="{% static 'leaflet/leaflet.css'%}"/>
+ <!-- Make sure you put this AFTER Leaflet's CSS -->
+ <script src="{% static 'leaflet/leaflet.js' %}"></script>
+ <script src="{% static 'leaflet/leaflet.polylineDecorator.js' %}"></script>
+{% endblock css %}
+
+{% block brand_small %}
+Manage your own Virtual Products
+{% endblock brand_small %}
+
+{% block title %}
+product view
+{% endblock title %}
+
+{% block sidebar %}
+<nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block navbar-light bg-light sidebar collapse">
+  <div class="sidebar-sticky pt-3 pl-3">
+    <ul class="navbar-nav flex-column">
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'mAD_index' %}">
+          <span data-feather="home"></span>
+          Dashboard <span class="sr-only">(current)</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'mAD_user' %}">
+          <span data-feather="file"></span>
+          Constructors
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link active" href="{% url 'mAD_p_show' %}">
+          <span data-feather="file"></span>
+          Products
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'mAD_manu' %}">
+          <span data-feather="file"></span>
+          Manufacturers
+        </a>
+      </li>
+    </ul>
+  </div>
+</nav>
+{% endblock sidebar %}
+
+{% block page_view %}
+<div class="container-md py-5 col-md-9">
+<h3>Product Name: {{product.p_name}}</h3>
+
+<h3>Constructor Name</h3>
+<table class="table table-bordered table-striped table-sm" id="u_name" >
+  <thead>
+    <tr style="font-size:.5rem">
+      <th>Name</th>
+      <th>Contact Email</th>
+    </tr>
+  </thead>
+  <tbody>
+  {% for name,email in user_dic.items %}
+    <tr class="text-center" style="font-size:.75rem">
+      <td>{{ name }}</td>
+      <td>{{ email }}</td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+
+<label class="h3" for="p_manu">Manufacturers</label>
+<table class="table table-bordered table-striped table-sm" id="p_manu">
+  <thead>
+    <tr style="font-size:.5rem">
+      <th>Name</th>
+      <th>Info</th>
+      <th>Add Time</th>
+      <th>Location</th>
+      <th>Producing period</th>
+    </tr>
+  </thead>
+  <tbody>
+  {% for key,Manu in loc_dic.items %}
+    <tr class="text-center" style="font-size:.75rem">
+      <td>{{ Manu.name }}</td>
+      <td>{{ Manu.parent_info }}</td>
+      <td>{{ Manu.addtime }}</td>
+      <td>{{ Manu.addr }}</td>
+      <td>{{ Manu.producing_period }}</td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+
+
+
+<div class="container-fluid my-3">
+    <div id="mapid" style="width: 600px; height: 400px; position: relative;" class="my-3"></div>
+</div>
+</div>
+{% endblock page_view %}
+
+{% block jsbd %}
+<script>
+  var mymap = L.map('mapid').setView([{{ lat }}, {{ lon }}], {{ zoom_index }});
+  L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiY2ZzZ2VudCIsImEiOiJjbDFwN2N0bWQwcWxzM2JwZ3BncDdpM3JlIn0.6WZHljjw5-YB2ELfb_VW1Q', {
+      attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+      maxZoom: 18,
+      id: 'mapbox/streets-v11',
+      tileSize: 512,
+      zoomOffset: -1,
+      accessToken: 'your.mapbox.access.token'
+  }).addTo(mymap);
+  var blueIcon = new L.Icon({
+	iconUrl: "{% static 'image/marker-icon-blue.png' %}",
+	shadowUrl: "{% static 'image/marker-shadow.png' %}",
+	iconSize: [25, 41],
+	iconAnchor: [12, 41],
+	popupAnchor: [1, -34],
+	shadowSize: [41, 41]
+  });
+  var redIcon = new L.Icon({
+	iconUrl: "{% static 'image/marker-icon-red.png' %}",
+	shadowUrl: "{% static 'image/marker-shadow.png' %}",
+	iconSize: [25, 41],
+	iconAnchor: [12, 41],
+	popupAnchor: [1, -34],
+	shadowSize: [41, 41]
+  });
+  var yellowIcon = new L.Icon({
+	iconUrl: "{% static 'image/marker-icon-yellow.png' %}",
+	shadowUrl: "{% static 'image/marker-shadow.png' %}",
+	iconSize: [25, 41],
+	iconAnchor: [12, 41],
+	popupAnchor: [1, -34],
+	shadowSize: [41, 41]
+  });
+  {% for key,Manu in loc_dic.items %}
+    var marker_{{ key }} = new L.marker([{{Manu.lat}}, {{Manu.lon}}], {icon: blueIcon}).addTo(mymap);
+  {% endfor %}
+  {% for key,Manu in loc_dic_need_valid.items %}
+    var marker_{{ key }} = new L.marker([{{Manu.lat}}, {{Manu.lon}}], {icon: yellowIcon}).addTo(mymap);
+  {% endfor %}
+  {% for key,Manu in loc_dic_no_valid.items %}
+    var marker_{{ key }} = new L.marker([{{Manu.lat}}, {{Manu.lon}}], {icon: redIcon}).addTo(mymap);
+  {% endfor %}
+
+</script>
+{% endblock jsbd %}
+
+{% block signout_model_redirect %}
+  {% url 'mAD_signin' %}
+{% endblock signout_model_redirect %}

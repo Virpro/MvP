@@ -1,0 +1,221 @@
+{% extends "base/page_base_user.html" %}
+
+{% block brandlink %}
+  {% url 'mU_index' u_id %}
+{% endblock brandlink %}
+
+{% block brand_small %}
+Manage your own Virtual Products
+{% endblock brand_small %}
+
+{% block title %}
+product edit
+{% endblock title %}
+
+{% block sidebar %}
+<nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block navbar-light bg-light sidebar collapse">
+  <div class="sidebar-sticky pt-3 pl-3">
+    <ul class="navbar-nav flex-column">
+      <li class="nav-item">
+        <a class="nav-link " href="{% url 'mU_index'  u_id %}">
+          <span data-feather="home"></span>
+          Dashboard <span class="sr-only">(current)</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link active" href="{% url 'mU_p_show'  u_id %}">
+          <span data-feather="file"></span>
+          Products
+        </a>
+      </li>
+    </ul>
+  </div>
+    <!--
+  <div class="navbar-nav sticky-bottom md-block" id="navbarSupportedHomepage">
+    <ul class="navbar-nav text-white">
+
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-expanded="false">
+          Hi, {{request.session.already_login.u_name}}
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <button class="btn btn-link" type="button" data-toggle="modal" data-target="#ConfirmExit" style="font-size:0.5rem;color:#000">Sign Out</button>
+        </div>
+      </li>
+    </ul>
+  </div>
+  -->
+</nav>
+{% endblock sidebar %}
+
+{% block page_view %}
+<div class="container-md py-5 col-md-9">
+    <form role="form" class="form-horizontal needs-validation" action="{% url 'mU_p_update' u_id edit_product.p_id%}" method="POST" enctype="multipart/form-data" novalidate>
+        {% csrf_token%}
+        <div class="form-group">
+            <label for="p_name" class="h5">Product Name</label>
+            <input type="text" class="form-control" id="p_name" value="{{edit_product.p_name}}" name="p_name" required>
+        </div>
+        <h5>Owners</h5>
+        <table class="table table-bordered table-striped table-sm" id="u_name" >
+          <thead>
+            <tr style="font-size:.5rem">
+              <th>Name</th>
+              <th>Contact</th>
+            </tr>
+          </thead>
+          <tbody>
+          {% for name,email in user_dic.items %}
+            <tr class="text-center" style="font-size:.75rem">
+              <td>{{ name }}</td>
+              <td>{{ email }}</td>
+            </tr>
+          {% endfor %}
+          </tbody>
+        </table>
+        <div class="form-group">
+            <label for="p_manu" class="h5">Manufacturers</label>
+            <table class="table table-bordered table-striped table-sm" id="p_manu">
+              <thead>
+                <tr style="font-size:.5rem">
+                  <th>Name</th>
+                  <th>Access right</th>
+                  <th>Add Time</th>
+                  <th>Options</th>
+                </tr>
+              </thead>
+              <tbody>
+              {% for key,Manu in manus_dic.items %}
+              {% if Manu.status == 0 %}
+                <tr class="text-center" style="font-size:.75rem">
+                  <td>{{ Manu.name }}</td>
+                  <td>
+                      <div class="container">
+                        <div class="row row-cols-2">
+                        <div class="col">{{ Manu.m_right }}</div>
+                        <div class="col text-right">
+                            <a class=" btn btn-outline-danger btn-sm mr-2" href="{% url 'mU_p_right_update' u_id p_id Manu.pm_id %}" style="color:#212529;font-size:0.5rem">update</a>
+                        </div>
+                        </div>
+                      </div>
+                  </td>
+                  <td>{{ Manu.addtime }}</td>
+                  <td>
+                    <div class="d-flex" >
+                      <a class=" btn btn-outline-danger btn-sm mr-2" href="{% url 'mU_p_delete' u_id p_id Manu.pm_id %}" style="color:#212529;font-size:0.5rem">Delete</a>
+                    </div>
+                  </td>
+                </tr>
+              {% elif Manu.status == 4 %}
+                <tr class="text-center" style="font-size:.75rem">
+                  <td>{{ Manu.name }}</td>
+                  <td>
+                      <div class="container">
+                        <div class="row row-cols-2">
+                        <div class="col">{{ Manu.m_right }}</div>
+                        <div class="col text-right">
+                            <a class=" btn btn-outline-danger btn-sm mr-2" href="{% url 'mU_p_right_update' u_id p_id Manu.pm_id %}" style="color:#212529;font-size:0.5rem">update</a>
+                        </div>
+                        </div>
+                      </div>
+                  </td>
+                  <td>{{ Manu.addtime }}</td>
+                  <td>
+                    <div class="d-flex" >
+                      <a class=" btn btn-outline-danger btn-sm mr-2" href="{% url 'mU_p_delete' u_id p_id Manu.pm_id %}" style="color:#212529;font-size:0.5rem">Delete</a>
+                    </div>
+                  </td>
+                </tr>
+              {% elif Manu.status == 1 %}
+                <tr class="text-center" style="color:#dc3545;font-size:.75rem">
+                  <td>{{ Manu.name }}</td>
+                  <td>
+                      <div class="container">
+                        <div class="row row-cols-2">
+                        <div class="col">{{ Manu.m_right }}</div>
+                        <div class="col text-right">
+                            <a class=" btn btn-outline-danger btn-sm mr-2" href="{% url 'mU_p_right_update' u_id p_id Manu.pm_id %}" style="color:#212529;font-size:0.5rem">update</a>
+                        </div>
+                        </div>
+                      </div>
+                  </td>
+                  <td>{{ Manu.addtime }}</td>
+                  <td>
+                    <div class="d-flex" >
+                      <a class=" btn btn-outline-danger btn-sm mr-2" href="{% url 'mU_p_recovery' u_id p_id Manu.pm_id %}" style="color:#212529;font-size:0.5rem">Recovery</a>
+                    </div>
+                  </td>
+                </tr>
+              {% endif %}
+              {% endfor %}
+              </tbody>
+            </table>
+        </div>
+        <div class="form-group">
+          <label for="p_discription" class="h5">Product description</label>
+          <textarea class="form-control" id="p_discription" name="p_discription"  rows="3">{{edit_product.description}}</textarea>
+        </div>
+        <div>
+            <label class="h5">Product status: </label>
+            </br>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="ProductStatus" id="status1" value="private" required checked>
+              <label class="form-check-label" for="status1">1. Private</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="ProductStatus" id="status2" value="public" required>
+              <label class="form-check-label" for="status2">2. Public</label>
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-dark mt-3" data-toggle="modal" data-target="#ConfirmEdit">
+            Submit
+        </button>
+    </form>
+</div>
+
+<script>
+    var status = Number({{edit_product.p_status}});
+    console.log(status);
+    if(status == 0){
+        dform1=document.getElementById("status1");
+        dform1.checked=true;
+        dform2=document.getElementById("status2");
+        dform2.checked=false;
+    }else if(status == 1){
+        dform1=document.getElementById("status2");
+        dform1.checked=true;
+        dform2=document.getElementById("status1");
+        dform2.checked=false;
+    }else{
+        dform1=document.getElementById("status2");
+        dform1.checked=false;
+        dform2=document.getElementById("status1");
+        dform2.checked=false;
+    }
+</script>
+
+<script>
+    (function() {
+      'use strict';
+      window.addEventListener('load', function() {
+        // Fetch all the forms we want to apply custom Bootstrap validation styles to
+        var forms = document.getElementsByClassName('needs-validation');
+        // Loop over them and prevent submission
+        var validation = Array.prototype.filter.call(forms, function(form) {
+          form.addEventListener('submit', function(event) {
+            if (form.checkValidity() === false) {
+              event.preventDefault();
+              event.stopPropagation();
+            }
+            form.classList.add('was-validated');
+          }, false);
+        });
+      }, false);
+    })();
+</script>
+{% endblock page_view %}
+
+{% block modals %}
+{% endblock modals %}
+
